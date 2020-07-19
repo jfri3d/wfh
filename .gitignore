@@ -1,0 +1,36 @@
+.DS_Store
+cmake-build-*/
+*.iws
+
+# IntelliJ
+out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+.idea/
+.pytest_cache/
+*.env
+.env.local
+*.egg-info/
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+target
+
+.mypy_cache
+.venv
+.vscode
+
+venv/
+__pycache__/
+*.pyc
+
+Pipfile.lock
