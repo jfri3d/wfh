@@ -1,6 +1,7 @@
 import logging
 
 from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 from constants import INTERVAL, START_TIME, END_TIME
 from utils import update_inky
