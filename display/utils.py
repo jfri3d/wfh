@@ -1,9 +1,11 @@
 from datetime import datetime
 
+import requests
 from PIL import Image, ImageDraw, ImageFont
 from inky import InkyWHAT
 
 from constants import FONT, TIMES, ICONS
+from model import Actions
 
 # edge pixel values
 X_EDGE = 5
@@ -19,16 +21,30 @@ TICK_HEIGHT = 5
 # WFH labels
 X_LABEL = 30
 
-# FIXME -> FAKE DATA
-data = {
-    "now": datetime(2020, 7, 19, 18, 00),
-    "login": [datetime(2020, 7, 19, 9, 13), datetime(2020, 7, 19, 13, 0, 0)],
-    "lunch": [datetime(2020, 7, 19, 12, 35, 0)],
-    "logoff": [datetime(2020, 7, 19, 12, 35)],
-    "move": [datetime(2020, 7, 19, 11, 5)],
-    "pushups": [datetime(2020, 7, 19, 10, 35), datetime(2020, 7, 19, 15, 35)],
-    "coffee": [datetime(2020, 7, 19, 9, 45), datetime(2020, 7, 19, 11, 45), datetime(2020, 7, 19, 14, 35)]
-}
+
+# # FIXME -> FAKE DATA
+# data = {
+#     "now": datetime.now(),
+#     "login": [datetime(2020, 7, 19, 9, 13), datetime(2020, 7, 19, 13, 0, 0)],
+#     "lunch": [datetime(2020, 7, 19, 12, 35, 0)],
+#     "logoff": [datetime(2020, 7, 19, 12, 35)],
+#     "move": [datetime(2020, 7, 19, 11, 5)],
+#     "pushups": [datetime(2020, 7, 19, 10, 35), datetime(2020, 7, 19, 15, 35)],
+#     "coffee": [datetime(2020, 7, 19, 9, 45), datetime(2020, 7, 19, 11, 45), datetime(2020, 7, 19, 14, 35)]
+# }
+
+
+def _get_data(action: Actions, host: str = "http://mango.local:8080"):
+    r = requests.get(f"{host}/{action.name}")
+    return r.json()["response"]
+
+
+def build_data():
+    data = {"now": datetime.now()}
+    for action in Actions:
+        dates = _get_data(action).get("dates", [])
+        data[action.name] = [datetime.strptime(d, "%Y-%m-%d %H:%M:%S") for d in dates]
+    return data
 
 
 def _build_font(font_size: int = 12) -> ImageFont.FreeTypeFont:
@@ -70,6 +86,9 @@ def _convert_time(date: datetime, start_px: int, end_px: int, start_hr: int = 8,
 
 
 def update_inky():
+    data = build_data()
+    print(data)
+
     # INIT
     # ====
     inky = InkyWHAT("yellow")
@@ -140,11 +159,11 @@ def update_inky():
     # WORK
     # ====
 
-    Y = 65
+    Y = 60
 
     # add label
     label = "Work"
-    font = _build_font(25)
+    font = _build_font(30)
     w, h = _get_font_size(font, label)
     draw.text((X_EDGE, Y - h // 2), label, inky.BLACK, font)
     draw.text((X_EDGE, Y - h // 2), label[0], inky.YELLOW, font)
@@ -160,13 +179,13 @@ def update_inky():
         # start
         start_px = _convert_time(working_time[0], TIME_START, TIME_END)
         start_str = working_time[0].strftime("%H:%M")
-        draw.text((start_px, Y + 2), start_str, inky.BLACK, font)
+        draw.text((start_px, Y + 4), start_str, inky.BLACK, font)
 
         # end
         stop_px = _convert_time(working_time[1], TIME_START, TIME_END)
         stop_str = working_time[1].strftime("%H:%M")
         w, h = _get_font_size(font, stop_str)
-        draw.text((stop_px - int(0.75 * w), Y + 2), stop_str, inky.BLACK, font)
+        draw.text((stop_px - int(0.75 * w), Y + 4), stop_str, inky.BLACK, font)
 
         # total
         total_sec += (working_time[1] - working_time[0]).total_seconds()
@@ -183,11 +202,11 @@ def update_inky():
     # FOOD
     # ====
 
-    Y = 130
+    Y = 125
 
     # add label
     label = "Food"
-    font = _build_font(25)
+    font = _build_font(30)
     w, h = _get_font_size(font, label)
     draw.text((X_EDGE, Y - h // 2), label, inky.BLACK, font)
     draw.text((X_EDGE, Y - h // 2), label[0], inky.YELLOW, font)
@@ -210,7 +229,7 @@ def update_inky():
 
     # add label
     label = "Health"
-    font = _build_font(25)
+    font = _build_font(30)
     w, h = _get_font_size(font, label)
     draw.text((X_EDGE, Y - h // 2), label, inky.BLACK, font)
     draw.text((X_EDGE, Y - h // 2), label[0], inky.YELLOW, font)

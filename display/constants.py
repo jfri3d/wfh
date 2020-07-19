@@ -1,5 +1,5 @@
 # define fixed rate for running WFH
-INTERVAL = 5
+INTERVAL = 15
 START_TIME = 8
 END_TIME = 20
 
