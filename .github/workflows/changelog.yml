@@ -1,27 +1,29 @@
-name: 'release'
+name: Create release
 on:
   push:
     tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-
+      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
 jobs:
-  release:
-    runs-on: ubuntu-latest
+  build:
+    name: "🚀 Release"
+    runs-on: ubuntu-18.04
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Generate changelog
-        id: changelog
-        uses: ./
+      - name: "📥 Check-out"
+        uses: actions/checkout@v1
+      - name: "✏️ Generate changelog"
+        id: generate-changelog
+        uses: heinrichreimer/action-github-changelog-generator@v2.1
         with:
-          github-token: ${{ secrets.github_token }}
-
-      - name: Create Release
-        uses: actions/create-release@v1
+          onlyLastTag: "true"
+          stripHeaders: "true"
+          stripGeneratorNotice: "true"
+      - name: "🚀 Create GitHub release"
+        uses: actions/create-release@v1.0.1
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ steps.changelog.outputs.tag }}
-          release_name: ${{ steps.changelog.outputs.tag }}
-          body: ${{ steps.changelog.outputs.clean_changelog }}
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: ${{ steps.generate-changelog.outputs.changelog }}
+          draft: true
+          prerelease: false
