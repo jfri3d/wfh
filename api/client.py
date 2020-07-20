@@ -59,3 +59,17 @@ class DBClient:
         result = cur.execute(command, values).fetchall()
 
         return {"action": action.name, "dates": [v[0] for v in result]}
+
+    def get_today(self, today: str):
+        logging.info(f"[client] get today -> {today}")
+        self.client = self._connect()
+        cur = self.client.cursor()
+        command = f"SELECT action, datetime(d, 'localtime') FROM {TABLE_NAME} WHERE date(d, 'localtime') = ?"
+        raw = cur.execute(command, (today,)).fetchall()
+
+        # insert
+        out = {action.name: [] for action in Actions}
+        for r in raw:
+            out[r[0]].append(r[1])
+
+        return out

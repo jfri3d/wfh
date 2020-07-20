@@ -11,13 +11,11 @@
         <img src="https://img.shields.io/github/commit-activity/m/jfri3d/WFH?style=flat-square&color=blue" /></a>
 </p>
 
-A monitor for tracking critical Work From Home (WFH) actions.
+A monitor for tracking critical Work From Home (WFH) actions grouped as follows:
 
-- Login
-- Coffee
-- Lunch
-- Move
-- Logoff
+- **W**ork
+- **F**ood
+- **H**ealth
 
 ## Prerequisites
 

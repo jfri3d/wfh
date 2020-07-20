@@ -4,8 +4,7 @@ import requests
 from PIL import Image, ImageDraw, ImageFont
 from inky import InkyWHAT
 
-from constants import FONT, TIMES, ICONS
-from model import Actions
+from constants import FONT, TIMES, ICONS, API_HOST
 
 # edge pixel values
 X_EDGE = 5
@@ -22,28 +21,16 @@ TICK_HEIGHT = 5
 X_LABEL = 30
 
 
-# # FIXME -> FAKE DATA
-# data = {
-#     "now": datetime.now(),
-#     "login": [datetime(2020, 7, 19, 9, 13), datetime(2020, 7, 19, 13, 0, 0)],
-#     "lunch": [datetime(2020, 7, 19, 12, 35, 0)],
-#     "logoff": [datetime(2020, 7, 19, 12, 35)],
-#     "move": [datetime(2020, 7, 19, 11, 5)],
-#     "pushups": [datetime(2020, 7, 19, 10, 35), datetime(2020, 7, 19, 15, 35)],
-#     "coffee": [datetime(2020, 7, 19, 9, 45), datetime(2020, 7, 19, 11, 45), datetime(2020, 7, 19, 14, 35)]
-# }
-
-
-def _get_data(action: Actions, host: str = "http://mango.local:8080"):
-    r = requests.get(f"{host}/{action.name}")
+def _get_data(host: str = API_HOST):
+    r = requests.get(f"{host}/today")
     return r.json()["response"]
 
 
 def build_data():
-    data = {"now": datetime.now()}
-    for action in Actions:
-        dates = _get_data(action).get("dates", [])
-        data[action.name] = [datetime.strptime(d, "%Y-%m-%d %H:%M:%S") for d in dates]
+    data = _get_data()
+    for action, dts in data.items():
+        data[action] = [datetime.strptime(dt, "%Y-%m-%d %H:%M:%S") for dt in dts]
+    data["now"] = datetime.now()
     return data
 
 
@@ -109,17 +96,18 @@ def update_inky():
 
     # add date
     now = data["now"]
-    date_str = now.strftime("%d.%m.%Y %H:%M")
-    w, h = _get_font_size(font, date_str)
-    draw.text((inky.WIDTH - w, Y_EDGE), date_str, inky.BLACK, font)
+    date_str = now.strftime("%d.%m.%Y")
+    wd, _ = _get_font_size(font, date_str)
+    time_str = now.strftime("%H:%M")
+    wt, _ = _get_font_size(font, time_str)
 
-    date_str = now.strftime("%H:%M")
-    w, h = _get_font_size(font, date_str)
-    draw.text((inky.WIDTH - w, Y_EDGE), date_str, inky.YELLOW, font)
+    draw.text((inky.WIDTH - wt - wd - X_EDGE, Y_EDGE), date_str, inky.BLACK, font)
+    draw.text((inky.WIDTH - wt, Y_EDGE), time_str, inky.YELLOW, font)
 
     # add divider
     HEADER_HEIGHT = h + Y_EDGE
-    draw.line((X_EDGE, HEADER_HEIGHT, inky.WIDTH - X_EDGE, HEADER_HEIGHT), fill=inky.BLACK, width=DIVIDER_HEIGHT)
+    draw.line((X_EDGE, HEADER_HEIGHT + 2, inky.WIDTH - X_EDGE, HEADER_HEIGHT + 2), fill=inky.BLACK,
+              width=DIVIDER_HEIGHT)
 
     # FOOTER
     # ======
@@ -164,8 +152,8 @@ def update_inky():
     # add label
     label = "Work"
     font = _build_font(30)
-    w, h = _get_font_size(font, label)
-    draw.text((X_EDGE, Y - h // 2), label, inky.BLACK, font)
+    w, h = _get_font_size(font, label[0])
+    draw.text((X_EDGE + w, Y - h // 2), label[1:], inky.BLACK, font)
     draw.text((X_EDGE, Y - h // 2), label[0], inky.YELLOW, font)
 
     # fix logoff if not existing
@@ -183,9 +171,10 @@ def update_inky():
 
         # end
         stop_px = _convert_time(working_time[1], TIME_START, TIME_END)
-        stop_str = working_time[1].strftime("%H:%M")
-        w, h = _get_font_size(font, stop_str)
-        draw.text((stop_px - int(0.75 * w), Y + 4), stop_str, inky.BLACK, font)
+        if (stop_px - start_px) > 100:
+            stop_str = working_time[1].strftime("%H:%M")
+            w, h = _get_font_size(font, stop_str)
+            draw.text((stop_px - int(0.75 * w), Y + 4), stop_str, inky.BLACK, font)
 
         # total
         total_sec += (working_time[1] - working_time[0]).total_seconds()
@@ -194,7 +183,7 @@ def update_inky():
         draw.line((start_px, Y, stop_px, Y), fill=inky.YELLOW, width=3 * DIVIDER_HEIGHT)
 
     # write total work time
-    total_str = "Σ {:.1f} hr".format(total_sec / 3600)
+    total_str = "Σ {:.2f} hr".format(total_sec / 3600)
     font = _build_font(25)
     w, h = _get_font_size(font, total_str)
     draw.text((inky.WIDTH - w - X_EDGE, HEADER_HEIGHT + 5), total_str, inky.YELLOW, font)
@@ -207,20 +196,21 @@ def update_inky():
     # add label
     label = "Food"
     font = _build_font(30)
-    w, h = _get_font_size(font, label)
-    draw.text((X_EDGE, Y - h // 2), label, inky.BLACK, font)
+    w, h = _get_font_size(font, label[0])
+    draw.text((2 * X_EDGE + w // 3, Y - h // 2), label[1:], inky.BLACK, font)
     draw.text((X_EDGE, Y - h // 2), label[0], inky.YELLOW, font)
 
     # add lunch icon
-    icon = _load_image(ICONS["lunch"], ICON_SIZE)
-    lunch_px = _convert_time(data["lunch"][0], TIME_START, TIME_END)  # ASSUME SINGLE LUNCH
-    img.paste(icon, box=(lunch_px - ICON_SIZE // 2, Y - ICON_SIZE))
+    if data["lunch"]:
+        icon = _load_image(ICONS["lunch"], ICON_SIZE)
+        lunch_px = _convert_time(data["lunch"][0], TIME_START, TIME_END)  # ASSUME SINGLE LUNCH
+        img.paste(icon, box=(lunch_px - ICON_SIZE // 2, Y - ICON_SIZE))
 
     # add coffee icons
     for coffee in data["coffee"]:
         icon = _load_image(ICONS["coffee"], ICON_SIZE)
         coffee_px = _convert_time(coffee, TIME_START, TIME_END)
-        img.paste(icon, box=(coffee_px, Y + ICON_SIZE // 3))
+        img.paste(icon, box=(coffee_px - ICON_SIZE // 2, Y + ICON_SIZE // 3))
 
     # FOOD
     # ====
@@ -230,21 +220,21 @@ def update_inky():
     # add label
     label = "Health"
     font = _build_font(30)
-    w, h = _get_font_size(font, label)
-    draw.text((X_EDGE, Y - h // 2), label, inky.BLACK, font)
+    w, h = _get_font_size(font, label[0])
+    draw.text((X_EDGE + w, Y - h // 2), label[1:], inky.BLACK, font)
     draw.text((X_EDGE, Y - h // 2), label[0], inky.YELLOW, font)
 
     # add pushup icons
     for pushups in data["pushups"]:
         icon = _load_image(ICONS["pushups"], ICON_SIZE)
         pushups_px = _convert_time(pushups, TIME_START, TIME_END)
-        img.paste(icon, box=(pushups_px, Y - ICON_SIZE))
+        img.paste(icon, box=(pushups_px - ICON_SIZE // 2, Y - ICON_SIZE))
 
     # add move icons
     for move in data["move"]:
         icon = _load_image(ICONS["move"], ICON_SIZE)
         move_px = _convert_time(move, TIME_START, TIME_END)
-        img.paste(icon, box=(move_px, Y + ICON_SIZE // 3))
+        img.paste(icon, box=(move_px - ICON_SIZE // 2, Y + ICON_SIZE // 3))
 
     # set image to inky
     inky.set_image(img)

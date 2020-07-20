@@ -1,6 +1,7 @@
 import logging
 import socket
 import sys
+from datetime import date
 
 from flask import Flask, Response, jsonify, request
 
@@ -23,9 +24,9 @@ def build_routes(client: DBClient):
     def health():
         return {"status": 200}
 
-    @app.route("/<action>", methods=['GET'])
-    def get(action):
-        logging.info(f"GET /{action}")
+    @app.route("/actions/<action>", methods=['GET'])
+    def get_action(action):
+        logging.info(f"GET /actions/{action}")
         limit_today = request.args.get('limit_today', default='True', type=str) == 'True'  # FIXME -> terrible!
 
         # fail fast with non-standard actions
@@ -37,8 +38,17 @@ def build_routes(client: DBClient):
         resp = client.get_actions(Actions[action], limit_today=limit_today)
         return jsonify({"status": 200, "response": resp})
 
+    @app.route("/today", methods=['GET'])
+    def get_today():
+        logging.info(f"GET /today")
+        today = date.today().strftime('%Y-%m-%d')
+        logging.info(f"retrieving today -> {today}")
+
+        resp = client.get_today(today)
+        return jsonify({"status": 200, "response": resp})
+
     @app.route("/<action>", methods=['POST'])
-    def post(action):
+    def post_action(action):
         logging.info(f"POST /{action}")
 
         # fail fast with non-standard actions
