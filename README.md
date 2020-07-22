@@ -17,6 +17,9 @@ A monitor for tracking critical Work From Home (WFH) actions grouped as follows:
 - **F**ood
 - **H**ealth
 
+![overview](./assets/Overview.PNG)
+
+
 ## Prerequisites
 
 ## Installation
