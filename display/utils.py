@@ -191,7 +191,7 @@ def update_inky():
     # FOOD
     # ====
 
-    Y = 125
+    Y = 128
 
     # add label
     label = "Food"
@@ -202,9 +202,9 @@ def update_inky():
 
     # add lunch icon
     if data["lunch"]:
-        icon = _load_image(ICONS["lunch"], ICON_SIZE)
+        icon = _load_image(ICONS["lunch"], int(ICON_SIZE*.75))
         lunch_px = _convert_time(data["lunch"][0], TIME_START, TIME_END)  # ASSUME SINGLE LUNCH
-        img.paste(icon, box=(lunch_px - ICON_SIZE // 2, Y - ICON_SIZE))
+        img.paste(icon, box=(lunch_px, Y - ICON_SIZE))
 
     # add coffee icons
     for coffee in data["coffee"]:
@@ -212,8 +212,8 @@ def update_inky():
         coffee_px = _convert_time(coffee, TIME_START, TIME_END)
         img.paste(icon, box=(coffee_px - ICON_SIZE // 2, Y + ICON_SIZE // 3))
 
-    # FOOD
-    # ====
+    # HEALTH
+    # ======
 
     Y = 205
 
