@@ -6,7 +6,7 @@ name: Test
 on:
   pull_request:
     branches: [ master ]
-  commit:
+  push:
     branches: [ master ]
 
 jobs:
