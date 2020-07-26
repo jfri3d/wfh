@@ -1,8 +1,7 @@
 # Work From Home (WFH) Monitor
 
 <p align="center">
-    <a href="" alt="Testing">
-        <img src="https://github.com/jfri3d/wfh/workflows/Test/badge.svg?branch=master" /></a>
+    <img src="https://github.com/jfri3d/wfh/workflows/Test/badge.svg" />
     <a href="" alt="License">
         <img src="https://img.shields.io/github/license/jfri3d/wfh?style=flat-square&color=blue" /></a>
     <a href="https://github.com/jfri3d/wfh/tags" alt="Tags">
