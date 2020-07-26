@@ -1,7 +1,7 @@
 import pytest
 
-from api.app import build_routes
-from api.client import DBClient
+from wfh.api.client import DBClient
+from wfh.app import build_routes
 
 
 @pytest.fixture()

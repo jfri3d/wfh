@@ -1,4 +1,4 @@
-from api.model import Actions
+from wfh.api.model import Actions
 
 
 def test_post_valid_action(client):

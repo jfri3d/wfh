@@ -5,7 +5,7 @@ END_TIME = 20
 
 API_HOST = "http://mango.local:8080"
 
-ASSET_PATH = './assets'
+ASSET_PATH = './wfh/assets'
 FONT = f"{ASSET_PATH}/fonts/ChickenSoup.otf"
 TIMES = {"8:00": f"{ASSET_PATH}/times/8.JPG",
          "10:00": f"{ASSET_PATH}/times/10.JPG",

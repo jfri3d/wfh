@@ -5,8 +5,8 @@ from datetime import date
 
 from flask import Flask, Response, jsonify, request
 
-from api.client import DBClient
-from api.model import Actions
+from wfh.api.client import DBClient
+from wfh.api.model import Actions
 
 root = logging.getLogger()
 root.setLevel(logging.DEBUG)

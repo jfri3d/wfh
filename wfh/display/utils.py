@@ -4,7 +4,7 @@ import requests
 from PIL import Image, ImageDraw, ImageFont
 from inky import InkyWHAT
 
-from constants import FONT, TIMES, ICONS, API_HOST
+from wfh.display.constants import FONT, TIMES, ICONS, API_HOST
 
 # edge pixel values
 X_EDGE = 5
@@ -202,7 +202,7 @@ def update_inky():
 
     # add lunch icon
     if data["lunch"]:
-        icon = _load_image(ICONS["lunch"], int(ICON_SIZE*.75))
+        icon = _load_image(ICONS["lunch"], int(ICON_SIZE * .75))
         lunch_px = _convert_time(data["lunch"][0], TIME_START, TIME_END)  # ASSUME SINGLE LUNCH
         img.paste(icon, box=(lunch_px, Y - ICON_SIZE))
 
