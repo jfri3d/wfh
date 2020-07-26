@@ -5,8 +5,8 @@ from datetime import date
 
 from flask import Flask, Response, jsonify, request
 
-from client import DBClient
-from model import Actions
+from wfh.api.client import DBClient
+from wfh.api.model import Actions
 
 root = logging.getLogger()
 root.setLevel(logging.DEBUG)
@@ -66,5 +66,5 @@ def build_routes(client: DBClient):
 
 
 if __name__ == "__main__":
-    app = build_routes(client=DBClient())
+    app = build_routes(client=DBClient(db_path="actions.sqlite", table_name="actions"))
     app.run(host=f"{socket.gethostname()}.local", port=8080)

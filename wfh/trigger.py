@@ -3,8 +3,8 @@ import logging
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
 
-from constants import INTERVAL, START_TIME, END_TIME
-from utils import update_inky
+from display.constants import INTERVAL, START_TIME, END_TIME
+from display.utils import update_inky
 
 logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.DEBUG)
 

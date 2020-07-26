@@ -17,7 +17,7 @@ A monitor for tracking critical Work From Home (WFH) actions grouped as follows:
 - **F**ood
 - **H**ealth
 
-![overview](./assets/Overview.PNG)
+![overview](wfh/assets/Overview.PNG)
 
 ##
 ### Prerequisites
@@ -39,7 +39,7 @@ The minimal Flask API is only necessary for connecting clients to the underlying
 A successful **development** API will output the following.
 
 ```bash
-$ python3 ./wfh/api/app.py
+$ python3 wfh/app.py
 
 2020-07-26 19:52:02,338 - root - INFO - [client] connecting -> actions.sqlite
 2020-07-26 19:52:02,344 - root - INFO - [client] checking table -> actions
@@ -53,7 +53,7 @@ $ python3 ./wfh/api/app.py
 
 #### Inky wHAT
 
-The eInk display is updated only on workdays based on simple fixed values defined in `./display/constants.py`. The default settings (8am to 8pm) are pasted below.
+The eInk display is updated only on workdays based on simple fixed values defined in `./wfh/display/constants.py`. The default settings (8am to 8pm) are pasted below.
 
 ```python
 INTERVAL = 15
@@ -64,7 +64,7 @@ END_TIME = 20
 A successful running inky scheduler job will output the following.
 
 ```bash
-$ python3 display/trigger.py
+$ python3 wfh/trigger.py
 
 2020-07-26 19:50:46,333:INFO:Adding job tentatively -- it will be properly scheduled when the scheduler start
 2020-07-26 19:50:46,338:INFO:Added job "update_inky" to job store "default"
