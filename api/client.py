@@ -2,35 +2,27 @@ import logging
 import sqlite3
 from datetime import datetime
 
-from model import Actions
-
-DB_PATH = "actions.sqlite"
-TABLE_NAME = "actions"
+from api.model import Actions
 
 
 class DBClient:
-    def __init__(self, db_path=DB_PATH, table_name=TABLE_NAME):
+    def __init__(self, db_path, table_name):
         self.db_path = db_path
         self.table_name = table_name
 
         self.client = self._connect()
-        self._create_table() if not self._check_table() else None
+        self._create_table()
 
     def _connect(self):
         logging.info(f"[client] connecting -> {self.db_path}")
         return sqlite3.connect(self.db_path)
-
-    def _check_table(self):
-        logging.info(f"[client] checking table -> {self.table_name}")
-        command = f"SELECT 1 FROM sqlite_master WHERE type='table' and name='{TABLE_NAME}'"
-        return bool(self.client.execute(command).fetchone())
 
     def _create_table(self):
         logging.info(f"[client] creating table -> {self.table_name}")
         cur = self.client.cursor()
 
         command = f"""
-            CREATE TABLE {self.table_name} (
+            CREATE TABLE IF NOT EXISTS {self.table_name} (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 d DATE DEFAULT (datetime('now','localtime')),
                 action str NOT NULL)"""
@@ -50,7 +42,7 @@ class DBClient:
         logging.info(f"[client] get action -> {action.name}")
         self.client = self._connect()
         cur = self.client.cursor()
-        command = f"SELECT datetime(d, 'localtime'), action FROM {TABLE_NAME} WHERE action = ?"
+        command = f"SELECT datetime(d, 'localtime'), action FROM {self.table_name} WHERE action = ?"
         values = (action.name,)
         if limit_today:
             logging.info(f"[client] limit query to today")
@@ -64,7 +56,7 @@ class DBClient:
         logging.info(f"[client] get today -> {today}")
         self.client = self._connect()
         cur = self.client.cursor()
-        command = f"SELECT action, datetime(d, 'localtime') FROM {TABLE_NAME} WHERE date(d, 'localtime') = ?"
+        command = f"SELECT action, datetime(d, 'localtime') FROM {self.table_name} WHERE date(d, 'localtime') = ?"
         raw = cur.execute(command, (today,)).fetchall()
 
         # insert
