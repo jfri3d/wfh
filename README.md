@@ -30,6 +30,12 @@ WFH requires at minimum the following hardware setup.
 
 WFH requires a running API, a scheduled trigger for updating Inky wHAT and an (optional) iOS shortcut for simplifying requests.
 
+Installation of the wfh package can be done as follows.
+
+```bash
+$ python3 setup.py install --user
+```
+
 #### API
 
 The minimal Flask API is only necessary for connecting clients to the underlying sqlite database. The main interaction is registering actions by the user (POST `/:action`) and retrieving "today" by the Inky wHAT (GET `/today`).
