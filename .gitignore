@@ -34,3 +34,9 @@ __pycache__/
 *.pyc
 
 Pipfile.lock
+
+
+# ignore test artifacts
+coverage.xml
+.coverage
+*.sqlite
