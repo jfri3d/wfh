@@ -1,15 +1,12 @@
 # Work From Home (WFH) Monitor
 
 <p align="center">
-    <img src="https://github.com/jfri3d/wfh/workflows/Test/badge.svg" />
-    <a href="" alt="License">
-        <img src="https://img.shields.io/github/license/jfri3d/wfh?style=flat-square&color=blue" /></a>
-    <a href="https://github.com/jfri3d/wfh/tags" alt="Tags">
-        <img src="https://img.shields.io/github/v/tag/jfri3d/wfh?style=flat-square&color=blue" /></a>
-    <a href="https://github.com/jfri3d/wfh/graphs/contributors" alt="Contributors">
-        <img src="https://img.shields.io/github/contributors/jfri3d/qfh?style=flat-square&color=blue" /></a>
-    <a href="https://github.com/jfri3d/wfh/pulse" alt="Activity">
-        <img src="https://img.shields.io/github/commit-activity/m/jfri3d/WFH?style=flat-square&color=blue" /></a>
+    <img src="https://img.shields.io/codecov/c/github/jfri3d/wfh?style=flat-square&color=blue&label=coverage">
+    <img src="https://img.shields.io/github/workflow/status/jfri3d/wfh/Test/master?style=flat-square&color=blue&label=tests">
+    <img src="https://img.shields.io/github/license/jfri3d/wfh?style=flat-square&color=blue">
+    <img src="https://img.shields.io/github/v/tag/jfri3d/wfh?style=flat-square&color=blue">
+    <img src="https://img.shields.io/github/contributors/jfri3d/wfh?style=flat-square&color=blue">
+    <img src="https://img.shields.io/github/commit-activity/m/jfri3d/WFH?style=flat-square&color=blue">
 </p>
 
 A monitor for tracking critical Work From Home (WFH) actions grouped as follows:
@@ -32,6 +29,12 @@ WFH requires at minimum the following hardware setup.
 ### Quick Start
 
 WFH requires a running API, a scheduled trigger for updating Inky wHAT and an (optional) iOS shortcut for simplifying requests.
+
+Installation of the wfh package can be done as follows.
+
+```bash
+$ python3 setup.py install --user
+```
 
 #### API
 

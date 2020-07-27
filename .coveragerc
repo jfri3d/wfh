@@ -1,0 +1,9 @@
+[run]
+branch = True
+include = wfh/*
+
+[report]
+ignore_errors = True
+omit =
+    **/__init__.py
+    **/tests/*
