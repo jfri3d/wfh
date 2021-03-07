@@ -1,0 +1,21 @@
+repos:
+-   repo: https://github.com/jorisroovers/gitlint
+    rev: v0.15.0
+    hooks:
+    - id: gitlint
+      name: lint commit message
+      args: [--contrib=CT1, --msg-filename]
+      stages: ["commit-msg"]
+-   repo: https://github.com/ambv/black
+    rev: stable
+    hooks:
+    - id: black
+      name: format code
+      language_version: python3
+      stages: ["commit"]
+-   repo: https://gitlab.com/pycqa/flake8
+    rev: 3.8.4
+    hooks:
+    - id: flake8
+      name: check PEP8
+      stages: ["commit"]
