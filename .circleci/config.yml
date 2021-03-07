@@ -12,10 +12,10 @@ jobs:
           command: |
             coverage run -m pytest
             coverage report
-            coverage html
+            coverage xml
           name: Test
-      - store_artifacts:
-          path: htmlcov
+      - store_test_results:
+          path: coverage.xml
 orbs:
   python: circleci/python@1.1.0
 version: 2.1
