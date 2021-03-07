@@ -3,3 +3,5 @@ inky==0.0.5
 requests==2.24.0
 flask==1.1.2
 Pillow==7.2.0
+coverage==5.5
+pytest==6.2.2
