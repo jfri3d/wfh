@@ -2,7 +2,7 @@
 
 <p align="center">
     <img src="https://img.shields.io/codecov/c/github/jfri3d/wfh?style=flat-square&color=blue&label=coverage">
-    <img src="https://img.shields.io/github/workflow/status/jfri3d/wfh/Test/master?style=flat-square&color=blue&label=tests">
+    <img src="https://img.shields.io/circleci/build/github/jfri3d/wfh/master?style=flat-square&color=blue&label=tests">
     <img src="https://img.shields.io/github/license/jfri3d/wfh?style=flat-square&color=blue">
     <img src="https://img.shields.io/github/v/tag/jfri3d/wfh?style=flat-square&color=blue">
     <img src="https://img.shields.io/github/contributors/jfri3d/wfh?style=flat-square&color=blue">
